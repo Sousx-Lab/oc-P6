@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
-const HTTPResponse = require('../services/http/http.response');
+const Response = require('../services/http/http.response');
 
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
@@ -10,12 +10,12 @@ exports.signup = (req, res, next) => {
             password: hash
         })
         user.save()
-        .then(() => HTTPResponse.OK(res, "L'utilisateur a bien été créé !"))
-        .catch(error => HTTPResponse.BAD_REQUEST(res, error))
+        .then(() => res.status(Response.HTTP_CREATED).json({message: "L'utilisateur a bien été créé !"}))
+        .catch(error => res.status(Response.HTTP_BAD_REQUEST).json({error}))
     })
-    .catch(error => HTTPResponse.SERVER_ERROR(res, error));
+    .catch(error => res.status(Response.HTTP_SERVER_ERROR).json({error}));
 };
 
 exports.login = (req, res, next) => {
-    HTTPResponse.OK(res, "Login !")
+    res.status(Response.HTTP_OK).json({message: "Login !"})
 };
