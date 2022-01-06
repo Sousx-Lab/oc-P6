@@ -11,7 +11,7 @@ exports.signup = (req, res, next) => {
         })
         user.save()
         .then(() => res.status(Response.HTTP_CREATED).json({message: "L'utilisateur a bien été créé !"}))
-        .catch(error => res.status(Response.HTTP_BAD_REQUEST).json({error}))
+        .catch(error => res.status(Response.HTTP_BAD_REQUEST).json(error))
     })
     .catch(error => res.status(Response.HTTP_SERVER_ERROR).json({error}));
 };
