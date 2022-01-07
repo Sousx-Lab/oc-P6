@@ -16,7 +16,7 @@ const model = require(`./models/${arg}`)
     }
     model.collection.drop()
         .then(() => {
-            console.log(`Model: ${arg} dropper`);
+            console.log(`Model: ${arg} dropped`);
             process.exit(0);
         })
         .catch((error) =>{
