@@ -11,10 +11,10 @@ if(undefined === arg){
 
 const model = require(`./models/${arg}`)
     if(!model){
-        console.log(`${model} model not found`);
+        console.log(`${arg} model not found`);
         process.exit(0);
     }
-    arg.collection.drop()
+    model.collection.drop()
         .then(() => {
             console.log(`Model: ${arg} dropper`);
             process.exit(0);
@@ -23,4 +23,3 @@ const model = require(`./models/${arg}`)
             console.log(error)
             process.exit(1)
     })
-    process.exit(0);
