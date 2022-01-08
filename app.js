@@ -1,9 +1,8 @@
 require('dotenv-flow').config();
 const express = require('express');
-const path = require('path');
 const app = express();
 const dataBase = require('./middleware/database/database');
-dataBase.connect();
+dataBase.connect()
 const userRoutes = require('./routes/user.routes');
 const sauceRoutes = require('./routes/sauce.routes');
 

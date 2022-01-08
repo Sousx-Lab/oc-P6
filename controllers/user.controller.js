@@ -2,9 +2,14 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const Response = require('../middleware/http/http.response');
 const {jwtSign} = require('../middleware/security/jwt');
+const {isEmpty} = require('validator');
 
+/**SignUp */
 exports.signup = (req, res, next) => {
 
+    if(isEmpty(req.body.password)){
+        return res.status(Response.HTTP_BAD_REQUEST).json({errors: {message: "Le mot de passe ne doit pas être vide !"}})
+    }
     bcrypt.hash(req.body.password, 10) 
     .then(hash => {
         const user = new User({
@@ -19,6 +24,7 @@ exports.signup = (req, res, next) => {
     .catch(error => res.status(Response.HTTP_SERVER_ERROR).json({error}));
 };
 
+/** Login */
 exports.login = (req, res, next) => {
 
     User.findOne({email: req.body.email})

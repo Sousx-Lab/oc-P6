@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
-const {isEmail} = require('validator');
+const {isEmail, isEmpty} = require('validator');
 
 const userSchema = mongoose.Schema({
     email: {
@@ -9,12 +9,20 @@ const userSchema = mongoose.Schema({
         unique: true,
         lowercase: true,
         trim: true,
-        validate: [isEmail, "Please enter a valid email"],
+        validate: [isEmail, "{VALUE} is not a valid email"],
     },
     password: {
         type: String, 
-        required: true, 
-        trim: true
+        required: [true, 'The password must not be empty'],
+        trim: true,
+        validate: [
+            {
+                validator:function(v) {
+                    return !isEmpty(v)
+                },
+                message:"The password must not be empty"
+            },
+        ]
     }
 });
 
