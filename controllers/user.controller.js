@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
-const Response = require('../services/http/http.response');
-const {jwtSign} = require('../services/security/jwt');
+const Response = require('../middleware/http/http.response');
+const {jwtSign} = require('../middleware/security/jwt');
 
 exports.signup = (req, res, next) => {
 

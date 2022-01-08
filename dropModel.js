@@ -1,5 +1,5 @@
 require('dotenv-flow').config();
-const dataBase = require('./services/database/database');
+const dataBase = require('./middleware/database/database');
 dataBase.connect();
 
 
