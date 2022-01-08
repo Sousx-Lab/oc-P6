@@ -13,13 +13,13 @@ const model = require(`./models/${arg}`)
     if(!model){
         console.log(`${arg} model not found`);
         process.exit(0);
-    }
-    model.collection.drop()
-        .then(() => {
-            console.log(`Model: ${arg} dropped`);
-            process.exit(0);
-        })
-        .catch((error) =>{
-            console.log(error)
-            process.exit(1)
+    };
+
+dataBase.dropModel(model)
+    .then(() => {
+        process.exit(0);
     })
+    .catch((error) =>{
+        console.log(error)
+        process.exit(1)
+});
