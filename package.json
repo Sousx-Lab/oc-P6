@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "jest --silent"
+    "test": "jest"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",

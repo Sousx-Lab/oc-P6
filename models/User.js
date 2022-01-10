@@ -18,7 +18,7 @@ const userSchema = mongoose.Schema({
         validate: [
             {
                 validator:function(v) {
-                    return !isEmpty(v)
+                    return !isEmpty(v, { ignore_whitespace:true })
                 },
                 message:"The password must not be empty"
             },

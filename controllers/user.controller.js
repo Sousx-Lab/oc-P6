@@ -7,7 +7,7 @@ const {isEmpty} = require('validator');
 /**SignUp */
 exports.signup = (req, res, next) => {
 
-    if(isEmpty(req.body.password)){
+    if(isEmpty(req.body.password, { ignore_whitespace: true})){
         return res.status(Response.HTTP_BAD_REQUEST).json({errors: {message: "Le mot de passe ne doit pas être vide !"}})
     }
     bcrypt.hash(req.body.password, 10) 
