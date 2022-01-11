@@ -4,7 +4,6 @@ const httpResponse = require('../../middleware/http/http.response');
 const dataBase = require('../../middleware/database/database');
 const User = require('../../models/User');
 const bcrypt = require('bcrypt');
-const {needUser} = require('./needUser');
 
 const userRoute = {
     signup: "/api/auth/signup",
