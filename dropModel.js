@@ -15,7 +15,7 @@ const model = require(`./models/${arg}`)
         process.exit(0);
     };
 
-dataBase.dropModel(model)
+dataBase.deleteData(model)
     .then(() => {
         process.exit(0);
     })
