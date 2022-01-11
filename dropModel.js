@@ -25,17 +25,8 @@ if (!model) {
                     process.exit(1)
                 });
         })
-
-<<<<<<< HEAD
-})()
-   
-=======
-dataBase.deleteData(model)
-    .then(() => {
-        process.exit(0);
-    })
-    .catch((error) =>{
-        console.log(error)
-        process.exit(1)
-});
->>>>>>> 896406dc76cb44f84903ad59435a856b87ffbf8c
+        .catch((error) => {
+            console.log(error)
+            process.exit(1);
+        })
+})();
