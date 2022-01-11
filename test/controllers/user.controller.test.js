@@ -13,7 +13,7 @@ const userRoute = {
 
 /** Dropping DB users before all tests.*/
 beforeAll(async () =>{
-    await dataBase.dropModel(User);
+    await dataBase.deleteData(User);
 });
 
 /** 
@@ -93,7 +93,7 @@ describe('login', () => {
     it("returns status code 200 and JWToken if user succesfully authentificated", async () =>{
         const newUser = {email: 'email@test.com', password: 'passwordTest'}
 
-        await dataBase.dropModel(User)
+        await dataBase.deleteData(User)
         .then(async () => {
         await request(app)
         .post(userRoute.signup)

@@ -16,7 +16,7 @@ const dataBase = {
         .catch(error => console.log(error));
     },
 
-    dropModel: async(model) => {
+    deleteData: async(model) => {
         await model.collection.deleteMany({})
         .then(() => {
         console.log(`Model User dropped`);
