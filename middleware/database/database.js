@@ -17,9 +17,13 @@ const dataBase = {
     },
 
     deleteData: async(model) => {
+        if(!model.prototype instanceof mongoose.Model){
+          console.log('Argument model is not a mongoose model');
+          return;
+        }
         await model.collection.deleteMany({})
         .then(() => {
-        console.log(`Model User dropped`);
+        console.log(`Model ${model.modelName} dropped`);
     })
     .catch((error) =>{
         console.log(error)
