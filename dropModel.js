@@ -1,7 +1,5 @@
 require('dotenv-flow').config();
 const dataBase = require('./middleware/database/database');
-dataBase.connect();
-
 
 const arg = process.argv.slice(2)[0]
 if(undefined === arg){
@@ -10,16 +8,23 @@ if(undefined === arg){
 }
 
 const model = require(`./models/${arg}`)
-    if(!model){
-        console.log(`${arg} model not found`);
-        process.exit(0);
-    };
+if (!model) {
+    console.log(`${arg} model not found`);
+    process.exit(0);
+};
 
-dataBase.dropModel(model)
-    .then(() => {
-        process.exit(0);
-    })
-    .catch((error) =>{
-        console.log(error)
-        process.exit(1)
-});
+(async () => {
+    await dataBase.connect()
+        .then(async () => {
+            await dataBase.deleteData(model)
+                .then(() => {
+                    process.exit(0);
+                })
+                .catch((error) => {
+                    console.log(error)
+                    process.exit(1)
+                });
+        })
+
+})()
+   
