@@ -12,7 +12,7 @@ const userRoute = {
 
 /** Dropping DB users before all tests.*/
 beforeAll(async () =>{
-    await User.deleteMany({});
+    await User.deleteMany({})
 });
 
 /** 
@@ -90,17 +90,20 @@ describe('login', () => {
     });
 
     it("returns status code 200 and JWToken if user succesfully authentificated", async () =>{
-        const newUser = {email: 'email@test.com', password: 'passwordTest'}
-
+        
         await User.deleteMany({})
+        const newUser = new User({
+            email: 'email@test.com', 
+            password: bcrypt.hashSync('passwordTest', 10)
+        });
 
-        await request(app)
-            .post(userRoute.signup)
-            .send(newUser)
+        await newUser.save()
+
         const res = await request(app)
             .post(userRoute.login)
-            .send(newUser);
+            .send({email: newUser.email, password: 'passwordTest'});
         expect(res.statusCode).toEqual(httpResponse.HTTP_OK);
+        
     });
 
 });
