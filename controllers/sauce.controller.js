@@ -4,11 +4,13 @@ const Sauce = require('../models/Sauce');
 exports.getAllSauces = (req, res, next) => {
     Sauce.find()
     .then((sauce) => res.status(Response.HTTP_OK).json(sauce))
-    .catch(error => res.status(Response.HTTP_SERVER_ERROR).json({error}))
+    .catch(error => res.status(Response.HTTP_SERVER_ERROR).json({error}));
 }
 
 exports.getOneSauce = (req, res, next) => {
-    res.status(Response.HTTP_OK).json({message: 'sauce'})
+    Sauce.findById({_id: req.params.id})
+    .then(sauce => res.status(Response.HTTP_OK).json(sauce))
+    .catch(error => res.status(Response.HTTP_NOT_FOUND).json({error}));
 }
 
 exports.createSauce = (req, res, next) => {
