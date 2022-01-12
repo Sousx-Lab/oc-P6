@@ -16,8 +16,9 @@ if (!model) {
 (async () => {
     await dataBase.connect()
         .then(async () => {
-            await dataBase.deleteData(model)
+            await model.deleteMany({})
                 .then(() => {
+                    console.log(`Model ${model.modelName} dropped`);
                     process.exit(0);
                 })
                 .catch((error) => {
