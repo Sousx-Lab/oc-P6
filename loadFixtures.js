@@ -2,6 +2,7 @@ require('dotenv-flow').config();
 const dataBase = require('./middleware/database/database');
 const Sauce = require('./models/Sauce');
 const User = require('./models/User');
+const bcrypt = require('bcrypt');
 
 async function* asyncGenerator() {
     let i = 0;
@@ -16,7 +17,7 @@ const generateData = async () => {
     for await (let i of asyncGenerator()) {
         user = [...user, new User({
             email: `email${i}@domain.com`,
-            password: "password"
+            password: bcrypt.hashSync("password", 10)
         })];
 
         sauce = [...sauce, new Sauce({
