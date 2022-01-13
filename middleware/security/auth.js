@@ -1,4 +1,4 @@
-const {jwtVerify} = require('../services/security/jwt');
+const {jwtVerify} = require('./jwt');
 const Response = require('../http/http.response');
 
 module.exports = (req, res, next) => {
@@ -6,9 +6,10 @@ module.exports = (req, res, next) => {
         const token = req.headers.authorization.split(' ')[1];
         const decodedToken = jwtVerify(token);
         const userId = decodedToken.userId;
-        if(req.userId && req.body.userId !== userId){
-            throw 'User ID not valide';
+        if(!userId){
+            throw new Error('User ID not valide');
         }else{
+            req.token = decodedToken;
             next();
         }
     } catch (error) {
