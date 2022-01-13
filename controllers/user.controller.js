@@ -8,7 +8,7 @@ const {isEmpty} = require('validator');
 exports.signup = (req, res, next) => {
 
     if(isEmpty(req.body.password, { ignore_whitespace: true})){
-        return res.status(Response.HTTP_BAD_REQUEST).json({errors: {message: "Le mot de passe ne doit pas être vide !"}})
+        return res.status(Response.HTTP_BAD_REQUEST).json({errors: {message: "Password must not be empty !"}})
     }
     bcrypt.hash(req.body.password, 10) 
     .then(hash => {
@@ -18,7 +18,7 @@ exports.signup = (req, res, next) => {
         })
 
         user.save()
-            .then(() => res.status(Response.HTTP_CREATED).json({message: "L'utilisateur a bien été créé !"}))
+            .then(() => res.status(Response.HTTP_CREATED).json({message: "The user has been successfully created !"}))
             .catch(error => res.status(Response.HTTP_BAD_REQUEST).json(error))
     })
     .catch(error => res.status(Response.HTTP_SERVER_ERROR).json({error}));
@@ -30,13 +30,13 @@ exports.login = (req, res, next) => {
     User.findOne({email: req.body.email})
     .then(user =>{
         if(!user){
-            return res.status(Response.HTTP_UNAUTHORIZED).json({error: "L'email ou le mot de passe invalide"});
+            return res.status(Response.HTTP_UNAUTHORIZED).json({error: "Invalid email or password"});
         }
 
         bcrypt.compare(req.body.password, user.password)
             .then(valid => {
                 if(!valid){
-                    return res.status(Response.HTTP_UNAUTHORIZED).json({error: "L'email ou le mot de passe invalide"});
+                    return res.status(Response.HTTP_UNAUTHORIZED).json({error: "Invalid email or password"});
                 }
                 res.status(Response.HTTP_OK).json(jwtSign(user))
             })
