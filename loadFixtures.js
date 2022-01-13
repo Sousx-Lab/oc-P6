@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 
 async function* asyncGenerator() {
     let i = 0;
-    while (i < 5) {
+    while (i < 8) {
         yield i++;
     }
 }
@@ -19,9 +19,9 @@ const generateData = async () => {
             email: `email${i}@domain.com`,
             password: bcrypt.hashSync("password", 10)
         })];
-
+        
         sauce = [...sauce, new Sauce({
-            userId: user[i]._id,
+            userId: (i >= 5) ? user[1]._id : user[i]._id,
             name: "Sauce" + i,
             manufacturer: "Marque" + i,
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec fringilla eget lacus fringilla dapibus.",
