@@ -5,6 +5,7 @@ const dataBase = require('./middleware/database/database');
 dataBase.connect()
 const userRoutes = require('./routes/user.routes');
 const sauceRoutes = require('./routes/sauce.routes');
+const path = require ('path');
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -18,6 +19,8 @@ app.use(express.urlencoded({
 }));
 app.use(express.json());
 
+/**Images */
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 /**Auth Api */
 app.use('/api/auth', userRoutes);
