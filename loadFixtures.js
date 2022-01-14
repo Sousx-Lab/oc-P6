@@ -37,10 +37,10 @@ const generateData = async () => {
     
     Sauce.insertMany(sauce)
         .then(async () => {
-            console.log('Sauce fixtures saved !')
+            console.log("\x1b[42m", "Sauce fixtures saved !", "\x1b[40m\n")
             User.insertMany(user)
                 .then(() => {
-                    console.log('User fixtures saved !')
+                    console.log("\x1b[42m", "User fixtures saved !", "\x1b[40m\n")
                     process.exit(0);
                 })
                 .catch(error => console.log(error));
@@ -54,7 +54,7 @@ const generateData = async () => {
             await Sauce.deleteMany({})
             await User.deleteMany({})
                 .then(async () => {
-                    console.log("All collections data has been dropped !");
+                    console.log("\x1b[42m", "All collections data has been dropped !", "\x1b[40m\n");
                     await generateData()
                 })
                 .catch(error => {

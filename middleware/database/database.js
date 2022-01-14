@@ -6,8 +6,8 @@ const dataBase = {
                 useNewUrlParser: true,
                 useUnifiedTopology: true
           })
-        .then(()=> console.log('Connexion à MongoDB réussie !'))
-        .catch(() => console.log('Connexion à MongoDB échouée !'));
+        .then(()=> console.log("\x1b[42m", 'Connexion à MongoDB réussie !', "\x1b[40m\n"))
+        .catch(() => console.log("\x1b[41m", 'Connexion à MongoDB échouée !', "\x1b[41m"));
     },
 
     disconnect: async () =>{
