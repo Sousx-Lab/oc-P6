@@ -1,5 +1,6 @@
 const Response = require('../middleware/http/http.response');
 const Sauce = require('../models/Sauce');
+const User = require('../models/User');
 const fs = require('fs');
 /** 
  * Get all sauces 
@@ -34,7 +35,9 @@ exports.createSauce = (req, res, next) => {
     
     const sauce = new Sauce({
         ...payload, 
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+        likes: 0,
+        dislikes:0,
     });
     
     sauce.save()
@@ -47,17 +50,13 @@ exports.createSauce = (req, res, next) => {
  */
 exports.modifySauce = (req, res, next) => {
    
-    const payload = req.file?.filename === undefined ? req.body : req.body.sauce
-    
-    if(payload?.sauce && !req.file?.filename){
-        return res.status(Response.HTTP_BAD_REQUEST).json({message: 'Bad request: Image required !'})
+    const payload = {
+        uploadedFile: req.file?.filename === undefined ? null : req.file.filename,
+        sauce: req.file?.filename === undefined ? req.body : JSON.parse(req.body.sauce)
     }
 
-    if(payload?.userId && payload?.userId !== req.token.userId ){
-        return res.status(Response.HTTP_UNAUTHORIZED).json({error: "Unauthorized request"});
-    }
-    if(payload?.sauce?.userId && payload?.sauce.userId !== req.token.userId){
-        return res.status(Response.HTTP_UNAUTHORIZED).json({error: "Unauthorized request"});
+    if(payload.sauce.userId !== req.token.userId ){
+        return res.status(Response.HTTP_UNAUTHORIZED).json({error: "Unauthorized request !!!!!"});
     }
 
     Sauce.findById({_id: req.params.id})
@@ -71,7 +70,7 @@ exports.modifySauce = (req, res, next) => {
 
             }
             
-            if(req.file?.filename !== undefined){
+            if(payload.uploadedFile){
                 const filename = sauce.imageUrl.split('/images/')[1];
                 if(fs.existsSync(`images/${filename}`)){
                     fs.unlink(`images/${filename}`, (err) => {
@@ -80,16 +79,16 @@ exports.modifySauce = (req, res, next) => {
                             }
                         });
                 }
-                sauce.imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+                sauce.imageUrl = `${req.protocol}://${req.get('host')}/images/${payload.uploadedFile}`;
             }
-            Object.assign(sauce, payload)
+            Object.assign(sauce, payload.sauce)
             sauce.save()
                 .then(() => {
                     return res.status(Response.HTTP_OK).json('Object modified !') 
                 })
                 .catch(error => res.status(Response.HTTP_SERVER_ERROR).json(error));
         })
-        .catch(error => res.status(Response.HTTP_BAD_REQUEST).json('qsdqsdqsd'));
+        .catch(error => res.status(Response.HTTP_BAD_REQUEST).json(error));
     
 }
 
@@ -127,5 +126,64 @@ exports.deleteSauce = (req, res, next) => {
 
 /** Like unLike sauce */
 exports.ratingSauce = (req, res, next) => {
-    res.status(Response.HTTP_CREATED).json({message: 'sauce'})
+
+    const payload = req.body;
+    if(payload.userId !== req.token.userId){
+        return res.status(Response.HTTP_UNAUTHORIZED).json({error: "Unauthorized request !"});
+    }
+    
+    Sauce.findOne({_id: req.params.id})
+        .then(async(sauce) => {
+           
+            if(!sauce){
+                return res.status(Response.HTTP_NOT_FOUND).json({message: "Object not found !"});
+            }
+            User.findOne({_id: req.token.userId})
+            .then( async(user) => {
+            
+            switch (payload.like) {
+                case 1:
+                    if(!sauce.usersLiked.includes(user.email)){
+                        sauce.likes++;
+                        sauce.usersLiked.push(user.email);
+                        if(sauce.usersDisliked.includes(user.email)){
+                            sauce.dislikes--
+                            sauce.usersDisliked = sauce.usersDisliked.filter((v) =>{return v !== user.email});
+                        }
+                    }
+                    break;
+                case -1:
+                    if(!sauce.usersDisliked.includes(user.email)){
+                        sauce.dislikes++
+                        sauce.usersDisliked.push(user.email);
+                        if(sauce.usersLiked.includes(user.email)){
+                            sauce.likes--
+                            sauce.usersLiked = sauce.usersLiked.filter((v) =>{return v !== user.email});
+                        }
+                    }
+                   break;
+                case 0:
+                    if(sauce.usersDisliked.includes(user.email)){
+                        sauce.dislikes--
+                        sauce.usersDisliked = sauce.usersDisliked.filter((v) =>{return v !== user.email});
+                    }
+                    if(sauce.usersLiked.includes(user.email)){
+                        sauce.likes--
+                        sauce.usersLiked = sauce.usersLiked.filter((v) =>{return v !== user.email});
+                    }
+                    break;
+                default:
+                    return res.status(Response.HTTP_BAD_REQUEST).json({error: "Value must be 1, 0 or -1"});
+            }
+            console.log(sauce)
+            await sauce.save()
+                .then(() => {
+                    res.status(Response.HTTP_OK).json('OK')
+                })
+                .catch(error => res.status(Response.HTTP_BAD_REQUEST).json({error}))
+            
+            })
+            .catch(error => res.status(Response.HTTP_BAD_REQUEST).json(error))
+        
+        }).catch(error => res.status(Response.HTTP_BAD_REQUEST).json(error))
 }
