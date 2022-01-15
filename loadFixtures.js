@@ -28,10 +28,10 @@ const generateData = async () => {
             mainPepper: "Red hot chili peppers",
             imageUrl: "https://static-01.daraz.com.bd/p/1ef55ad0e80b586da21786001dc8bda9.jpg",
             heat: i,
-            likes: i,
-            dislikes: i,
-            usersLiked: [`email${i}domain.com`, `email${i+1}domain.com`, `email${i+1}domain.com`],
-            usersDisliked: [`email${i+2}domain.com`, `email${i+2}domain.com`, `email${i+2}domain.com`],
+            likes: 0,
+            dislikes:0,
+            usersLiked: [],
+            usersDisliked: [],
         })];
     }
     
