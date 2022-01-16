@@ -15,8 +15,8 @@ exports.getAllSauces = (req, res, next) => {
  * Get one sauce by id 
  */
 exports.getOneSauce = (req, res, next) => {
-    Sauce.findById({_id: req.params.id})
-    .then(sauce => res.status(Response.HTTP_OK).json(sauce))
+    Sauce.findOne({_id: req.params.id})
+    .then((sauce) => res.status(Response.HTTP_OK).json(sauce))
     .catch(error => res.status(Response.HTTP_NOT_FOUND).json({error}));
 }
 
@@ -59,17 +59,12 @@ exports.modifySauce = (req, res, next) => {
         return res.status(Response.HTTP_UNAUTHORIZED).json({error: "Unauthorized request !!!!!"});
     }
 
-    Sauce.findById({_id: req.params.id})
-        .then((sauce) => {
-            if(!sauce){
-                return res.status(Response.HTTP_NOT_FOUND).json({message: "Object not found !"});
-            }
-            
+    Sauce.findOne({_id: req.params.id})
+        .then((sauce) => {  
             if(sauce.userId !== req.token.userId){
                 return res.status(Response.HTTP_UNAUTHORIZED).json({error: "Unauthorized request !"});
 
             }
-            
             if(payload.uploadedFile){
                 const filename = sauce.imageUrl.split('/images/')[1];
                 if(fs.existsSync(`images/${filename}`)){
@@ -96,12 +91,8 @@ exports.modifySauce = (req, res, next) => {
  * Delete sauce 
  */
 exports.deleteSauce = (req, res, next) => {
-    Sauce.findById({_id: req.params.id})
-        .then((sauce) => {
-            if(!sauce){
-                return res.status(Response.HTTP_NOT_FOUND).json({message: "Object not found !"});
-            }
-            
+    Sauce.findOne({_id: req.params.id})
+        .then((sauce) => {  
             if(sauce.userId !== req.token.userId){
                 return res.status(Response.HTTP_UNAUTHORIZED).json({error: "Unauthorized request !"});
 
@@ -118,7 +109,6 @@ exports.deleteSauce = (req, res, next) => {
                 Sauce.deleteOne({_id: sauce._id})
                     .then(() => res.status(Response.HTTP_OK).json({message: 'Object has been deleted !'}))
                     .catch((error) => res.status(Response.HTTP_BAD_REQUEST).json({error}));
-                
             }
         })
         .catch(error => res.status(Response.HTTP_SERVER_ERROR).json({error}));
@@ -134,10 +124,7 @@ exports.ratingSauce = (req, res, next) => {
     
     Sauce.findOne({_id: req.params.id})
         .then(async(sauce) => {
-           
-            if(!sauce){
-                return res.status(Response.HTTP_NOT_FOUND).json({message: "Object not found !"});
-            }
+            
             User.findOne({_id: req.token.userId})
             .then( async(user) => {
             
@@ -175,15 +162,14 @@ exports.ratingSauce = (req, res, next) => {
                 default:
                     return res.status(Response.HTTP_BAD_REQUEST).json({error: "Value must be 1, 0 or -1"});
             }
-            console.log(sauce)
+            
             await sauce.save()
                 .then(() => {
-                    res.status(Response.HTTP_OK).json('OK')
+                    res.status(Response.HTTP_OK).json('Objet liked')
                 })
-                .catch(error => res.status(Response.HTTP_BAD_REQUEST).json({error}))
-            
+                .catch(error => res.status(Response.HTTP_SERVER_ERROR).json({error}))
             })
-            .catch(error => res.status(Response.HTTP_BAD_REQUEST).json(error))
-        
-        }).catch(error => res.status(Response.HTTP_BAD_REQUEST).json(error))
+            .catch(error => res.status(Response.HTTP_UNAUTHORIZED).json({error: "Unauthorized request !"}))
+        })
+        .catch(error => res.status(Response.HTTP_BAD_REQUEST).json(error))
 }
