@@ -56,7 +56,7 @@ exports.modifySauce = (req, res, next) => {
     }
 
     if(payload.sauce.userId !== req.token.userId ){
-        return res.status(Response.HTTP_UNAUTHORIZED).json({error: "Unauthorized request !!!!!"});
+        return res.status(Response.HTTP_UNAUTHORIZED).json({error: "Unauthorized request !"});
     }
 
     Sauce.findOne({_id: req.params.id})
