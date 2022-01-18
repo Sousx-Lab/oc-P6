@@ -2,10 +2,10 @@ require('dotenv-flow').config();
 const express = require('express');
 const app = express();
 const dataBase = require('./middleware/database/database');
-dataBase.connect()
 const userRoutes = require('./routes/user.routes');
 const sauceRoutes = require('./routes/sauce.routes');
 const path = require ('path');
+dataBase.connect();
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
