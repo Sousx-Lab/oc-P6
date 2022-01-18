@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
-
+const mongoose = require('mongoose');
 /**
  * @param {object} user 
  * @returns {object|Error}
  */
 exports.jwtSign = function (user) {
-    if (!user) {
+    if(!user instanceof mongoose.model){
         throw 'User not found';
     }
     return {
