@@ -4,6 +4,7 @@ const httpResponse = require('../../middleware/http/http.response');
 const dataBase = require('../../middleware/database/database');
 const User = require('../../models/User');
 const bcrypt = require('bcrypt');
+const {needUser} = require('./needUser');
 
 const userRoute = {
     signup: "/api/auth/signup",
@@ -57,7 +58,7 @@ describe('sign up', () => {
             password: "password"
         });
         expect(res.statusCode).toEqual(httpResponse.HTTP_CREATED);
-        expect(res.body.message).toEqual("L'utilisateur a bien été créé !");
+        expect(res.body.message).toEqual("The user has been successfully created !");
     });
    
 });
@@ -91,14 +92,7 @@ describe('login', () => {
 
     it("returns status code 200 and JWToken if user succesfully authentificated", async () =>{
         
-        await User.deleteMany({})
-        const newUser = new User({
-            email: 'email@test.com', 
-            password: bcrypt.hashSync('passwordTest', 10)
-        });
-
-        await newUser.save()
-
+        const newUser = await needUser();
         const res = await request(app)
             .post(userRoute.login)
             .send({email: newUser.email, password: 'passwordTest'});
