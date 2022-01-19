@@ -2,12 +2,13 @@ const mongoose = require('mongoose');
 const Sauce = require('../../models/Sauce');
 
 async function* asyncGenerator() {
-    let i = 0;
-    while (i <= 4) {
+    let i = 1;
+    while (i <= 5) {
         yield i++;
     }
 }
 const needFixtures = async(user) => {
+    await Sauce.deleteMany({});
     let sauce = [];
     for await (let i of asyncGenerator()) {
         sauce = [...sauce, new Sauce({

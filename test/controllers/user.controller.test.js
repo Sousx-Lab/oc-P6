@@ -3,7 +3,6 @@ const request = require('supertest');
 const httpResponse = require('../../middleware/http/http.response');
 const dataBase = require('../../middleware/database/database');
 const User = require('../../models/User');
-const bcrypt = require('bcrypt');
 const {needUser} = require('./needUser');
 
 const userRoute = {
@@ -25,7 +24,7 @@ describe('sign up', () => {
         .post(userRoute.signup)
         .send({
             email: "",
-            password: "password"
+            password: "passwordTest1"
         });
         expect(res.statusCode).toEqual(httpResponse.HTTP_BAD_REQUEST);
     });
@@ -35,7 +34,7 @@ describe('sign up', () => {
         .post(userRoute.signup)
         .send({
             email: "not@validEmailCom",
-            password: "password"
+            password: "passwordTest1"
         });
         expect(res.statusCode).toEqual(httpResponse.HTTP_BAD_REQUEST);
     });
@@ -50,12 +49,22 @@ describe('sign up', () => {
         expect(res.statusCode).toEqual(httpResponse.HTTP_BAD_REQUEST);
     });
 
-    it("returns status code 201 and create user with message `L'utilisateur a bien été créé !`", async () => {
+    it('returns status code 400 if password not match requirement', async () => {
         const res = await request(app)
         .post(userRoute.signup)
         .send({
             email: "email@domain.com",
-            password: "password"
+            password: "notmatchpassword"
+        });
+        expect(res.statusCode).toEqual(httpResponse.HTTP_BAD_REQUEST);
+    });
+    
+    it("returns status code 201 and create user with message `The user has been successfully created !`", async () => {
+        const res = await request(app)
+        .post(userRoute.signup)
+        .send({
+            email: "email@domain.com",
+            password: "passwordTest1"
         });
         expect(res.statusCode).toEqual(httpResponse.HTTP_CREATED);
         expect(res.body.message).toEqual("The user has been successfully created !");
@@ -95,7 +104,7 @@ describe('login', () => {
         const newUser = await needUser();
         const res = await request(app)
             .post(userRoute.login)
-            .send({email: newUser.email, password: 'passwordTest'});
+            .send({email: newUser.email, password: 'PasswordTest1'});
         expect(res.statusCode).toEqual(httpResponse.HTTP_OK);
         
     });

@@ -17,7 +17,7 @@ const generateData = async () => {
     for await (let i of asyncGenerator()) {
         user = [...user, new User({
             email: `email${i}@domain.com`,
-            password: bcrypt.hashSync("password", 10)
+            password: bcrypt.hashSync(`Password${i}`, 10)
         })];
         
         sauce = [...sauce, new Sauce({

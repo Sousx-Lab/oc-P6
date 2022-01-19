@@ -4,11 +4,9 @@ const httpResponse = require('../../middleware/http/http.response');
 const dataBase = require('../../middleware/database/database');
 const User = require('../../models/User');
 const Sauce = require('../../models/Sauce');
-const bcrypt = require('bcrypt');
 const { needUser, needAuthorizationToken } = require('./needUser');
 const { needFixtures } = require ('./needFixtures');
 const path = require('path');
-const buffer = require('buffer');
 
 const sauceRoute = {
     /**Route Get all or Post new sauce */
@@ -28,10 +26,7 @@ let user = null;
 /** 
  * Dropping DB & create new fixtures before all tests.
  */
-beforeAll(async () =>{
-    await User.deleteMany({});
-    await Sauce.deleteMany({});
-
+beforeAll(async () =>{   
     user = await needUser();
     const newToken = needAuthorizationToken(user);
     token = newToken.token;
@@ -119,7 +114,6 @@ describe('Create new sauces controler test ', () =>{
  */
 describe('Modifiy sauce controller test', () => {
     it('Modify sauce returns status code 401 if no authenticated user', async () => {
-        
         const res = await request(app)
         .put(sauceRoute.getPutDeleteOne(sauces[0].id))
         expect(res.statusCode).toEqual(httpResponse.HTTP_UNAUTHORIZED);
@@ -142,7 +136,7 @@ describe('Modifiy sauce controller test', () => {
         expect(res.statusCode).toEqual(httpResponse.HTTP_UNAUTHORIZED);
     });
 
-    it('Modify sauce returns status code 401 if user is owner of object', async () => {
+    it('Modify sauce returns status code 200 if user is owner of object', async () => {
         const res = await request(app)
         .put(sauceRoute.getPutDeleteOne(sauces[3].id))
         .set('Authorization','Bearer ' + token)
@@ -166,20 +160,20 @@ describe('Modifiy sauce controller test', () => {
 describe('Delete sauce controller test', () => {
     it('Delete sauce returns status code 401 if no authenticated user', async () => { 
         const res = await request(app)
-        .delete(sauceRoute.getPutDeleteOne(sauces[0].id))
+        .del(sauceRoute.getPutDeleteOne(sauces[0].id))
         expect(res.statusCode).toEqual(httpResponse.HTTP_UNAUTHORIZED);
     });
 
     it('Delete sauce returns status code 401 if user is not the owner of object', async () => {
         const res = await request(app)
-        .delete(sauceRoute.getPutDeleteOne(sauces[0].id))
+        .del(sauceRoute.getPutDeleteOne(sauces[0].id))
         .set('Authorization','Bearer ' + token)
         expect(res.statusCode).toEqual(httpResponse.HTTP_UNAUTHORIZED);
     });
 
-    it('Delete sauce returns status code 401 if user is not the owner of object', async () => {
+    it('Delete sauce returns status code 200 if user is not the owner of object', async () => {
         const res = await request(app)
-        .delete(sauceRoute.getPutDeleteOne(sauces[3].id))
+        .del(sauceRoute.getPutDeleteOne(sauces[3].id))
         .set('Authorization','Bearer ' + token);
         expect(res.statusCode).toEqual(httpResponse.HTTP_OK);
     });
@@ -189,7 +183,13 @@ describe('Delete sauce controller test', () => {
  * Like unlike controller tests 
  */
 describe('Like unlike sauce controller test', () => {
-
+    beforeAll(async () =>{   
+        user = await needUser();
+        const newToken = needAuthorizationToken(user);
+        token = newToken.token;
+        sauces = await needFixtures(user);
+    });
+    
     it('Like / Unlike sauce returns status code 401 if no authenticated user', async () => {
         const res = await request(app)
         .post(sauceRoute.like(sauces[0].id))
@@ -198,7 +198,7 @@ describe('Like unlike sauce controller test', () => {
 
     it('Like sauce returns status code 200 if authenticated user', async () => {
         const res = await request(app)
-        .post(sauceRoute.like(sauces[0].id))
+        .post(sauceRoute.like(sauces[4].id))
         .set('Authorization','Bearer ' + token)
         .send({
             like: 1,
@@ -209,7 +209,7 @@ describe('Like unlike sauce controller test', () => {
 
     it('Unlike sauce returns status code 200 if authenticated user', async () => {
         const res = await request(app)
-        .post(sauceRoute.like(sauces[0].id))
+        .post(sauceRoute.like(sauces[4].id))
         .set('Authorization','Bearer ' + token)
         .send({
             like: -1,
@@ -220,7 +220,7 @@ describe('Like unlike sauce controller test', () => {
 
     it('Cancel like/unlike sauce returns status code 200 if authenticated user', async () => {
         const res = await request(app)
-        .post(sauceRoute.like(sauces[0].id))
+        .post(sauceRoute.like(sauces[4].id))
         .set('Authorization','Bearer ' + token)
         .send({
             like: 0,
@@ -228,7 +228,7 @@ describe('Like unlike sauce controller test', () => {
         })
         expect(res.statusCode).toEqual(httpResponse.HTTP_OK);
     });
-})
+});
 
  /** Closing the DB connection allows Jest to exit successfully.*/
 afterAll(async () =>{
