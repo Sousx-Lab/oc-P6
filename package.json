@@ -16,8 +16,7 @@
     "mongoose": "^6.1.4",
     "mongoose-sanitize": "^1.1.0",
     "mongoose-unique-validator": "^3.0.0",
-    "multer": "^1.4.4",
-    "validator": "^13.7.0"
+    "multer": "^1.4.4"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

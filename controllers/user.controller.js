@@ -2,14 +2,17 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const Response = require('../middleware/http/http.response');
 const {jwtSign} = require('../middleware/security/jwt');
-const {isEmpty} = require('validator');
+const {isEmpty, isValidPassword} = require('../middleware/security/validator');
 
 /**SignUp */
 exports.signup = (req, res, next) => {
 
-    if(isEmpty(req.body.password, { ignore_whitespace: true})){
-        return res.status(Response.HTTP_BAD_REQUEST).json({errors: {message: "Password must not be empty !"}})
+    if(isEmpty(req.body?.password) || !isValidPassword(req.body?.password)){
+        return res.status(Response.HTTP_BAD_REQUEST).json({errors: {message: 
+            "Le mot de passe doit contenir 8 caracteres minimum, au moin une lettre miniscule, une lettre majuscule et un chiffres !"
+        }})
     }
+    
     bcrypt.hash(req.body.password, 10) 
     .then(hash => {
         const user = new User({
