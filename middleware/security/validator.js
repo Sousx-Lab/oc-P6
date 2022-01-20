@@ -4,12 +4,14 @@
  * @returns {boolean}
  */
 exports.isEmail = (email) => {
-
+    if(typeof email !== "string"){
+        return false;
+    }
     return new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/).test(email);
 }
 
 /**
- * The regex check is Eight characters minimum, 
+ * The regex is CNIL compliance and check if eight characters minimum, 
  * at least one uppercase letter, one lowercase letter and one number
  * @param {string} password
  * @returns {boolean}
