@@ -7,14 +7,14 @@ const mongoose = require('mongoose');
  */
 exports.jwtSign = function (user) {
     try {
-        if(!user instanceof mongoose.model){
-            throw 'User not found';
+        if(typeof user !== "object" || !user?.id || !user?.email ){
+            throw 'User must be a object with id and email property';
         }
         return {
-            userId: user._id,
+            userId: user.id,
             token: jwt.sign({
-    
-                    userId: user._id,
+
+                    userId: user.id,
                     email: user.email
                 },
                 process.env.JWT_TOKEN_SECRET, {
@@ -33,8 +33,8 @@ exports.jwtSign = function (user) {
  */
 exports.jwtVerify = function (token) {
     try {
-        if (!token) {
-            throw 'Token not found';
+        if (!token || typeof token !== 'string') {
+            throw 'Token must be a Json Web Token valid';
         }
         return jwt.verify(token, process.env.JWT_TOKEN_SECRET);
     } catch (error) {
