@@ -205,9 +205,11 @@ describe('Like unlike sauce controller test', () => {
             userId: user.id
         })
         expect(res.statusCode).toEqual(httpResponse.HTTP_OK);
+        const likedSauce = await Sauce.findOne({_id: sauces[4].id})
+        expect(likedSauce.likes).toEqual(1);
     });
 
-    it('Unlike sauce returns status code 200 if authenticated user', async () => {
+    it('Dislike sauce returns status code 200 if authenticated user', async () => {
         const res = await request(app)
         .post(sauceRoute.like(sauces[4].id))
         .set('Authorization','Bearer ' + token)
@@ -216,9 +218,11 @@ describe('Like unlike sauce controller test', () => {
             userId: user.id
         })
         expect(res.statusCode).toEqual(httpResponse.HTTP_OK);
+        const disLikedSauce = await Sauce.findOne({_id: sauces[4].id})
+        expect(disLikedSauce.dislikes).toEqual(1);
     });
 
-    it('Cancel like/unlike sauce returns status code 200 if authenticated user', async () => {
+    it('Cancel like/dislike sauce returns status code 200 if authenticated user', async () => {
         const res = await request(app)
         .post(sauceRoute.like(sauces[4].id))
         .set('Authorization','Bearer ' + token)
@@ -227,6 +231,9 @@ describe('Like unlike sauce controller test', () => {
             userId: user.id
         })
         expect(res.statusCode).toEqual(httpResponse.HTTP_OK);
+        const CanceledDisLikedSauce = await Sauce.findOne({_id: sauces[4].id})
+        expect(CanceledDisLikedSauce.dislikes).toEqual(0);
+        expect(CanceledDisLikedSauce.likes).toEqual(0);
     });
 });
 
