@@ -7,7 +7,7 @@ const needUser = async () => {
         email: 'email@test.com', 
         password: bcrypt.hashSync('PasswordTest1', 10)
     });
-    await User.deleteMany({})   
+    await User.deleteMany({});   
     await newUser.save()
     return newUser;
 }

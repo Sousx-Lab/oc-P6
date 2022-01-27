@@ -25,12 +25,13 @@ const needFixtures = async(user) => {
             usersDisliked: [],
         })];
     }
-    Sauce.insertMany(sauce)
+    return Sauce.insertMany(sauce)
         .then(() => {
             console.log("\x1b[42m", "Sauce fixtures test saved !", "\x1b[40m\n")
+            return sauce
         })
         .catch(error => console.log(error))
-    return sauce
+
 }
 
 module.exports = {
