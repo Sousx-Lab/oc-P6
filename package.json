@@ -6,6 +6,7 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon server.js",
+    "fixtures": "node loadFixtures.js",
     "test": "jest"
   },
   "dependencies": {
