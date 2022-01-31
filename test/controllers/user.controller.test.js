@@ -84,7 +84,7 @@ describe('login', () => {
             email: " ",
             password: "password"
         });
-        expect(res.statusCode).toEqual(httpResponse.HTTP_UNAUTHORIZED);
+        expect(res.statusCode).toEqual(httpResponse.HTTP_BAD_REQUEST);
 
     });
 
