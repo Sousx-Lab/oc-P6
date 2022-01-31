@@ -10,7 +10,7 @@ exports.signup = (req, res, next) => {
     if(!isEmail(req.body?.email)){
         return res.status(Response.HTTP_BAD_REQUEST).json({message: "Email must be a valid email ! e.g: email@exemple.com"});
     }
-    if(isEmpty(req.body?.password) || !isValidPassword(req.body?.password)){
+    if(!isValidPassword(req.body?.password)){
         return res.status(Response.HTTP_BAD_REQUEST).json({message: 
             "The password must contain at least 8 characters, at least one lowercase letter, one uppercase letter and one number !."
         })
