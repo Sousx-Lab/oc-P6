@@ -33,6 +33,10 @@ exports.signup = (req, res, next) => {
 /** Login */
 exports.login = (req, res, next) => {
 
+    if(!isEmail(req.body?.email)){
+        return res.status(Response.HTTP_BAD_REQUEST).json({error: "Email must be a valid email ! e.g: email@exemple.com"});
+    }
+    
     User.findOne({email: req.body.email})
     .then(user =>{
         if(!user){
