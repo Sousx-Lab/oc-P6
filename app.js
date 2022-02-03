@@ -1,4 +1,4 @@
-require('dotenv-flow').config();
+require('dotenv-flow').config({silent: true});
 const express = require('express');
 const app = express();
 const dataBase = require('./middleware/database/database');

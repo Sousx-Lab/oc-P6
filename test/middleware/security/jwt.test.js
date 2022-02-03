@@ -1,4 +1,4 @@
-require('dotenv-flow').config();
+require('dotenv-flow').config({silent: true});
 const jsonWebToken = require('../../../middleware/security/jwt');
 
 let user = {
